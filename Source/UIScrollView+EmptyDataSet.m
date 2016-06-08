@@ -31,7 +31,7 @@
 @property (nonatomic, readonly) UILabel *titleLabel;
 @property (nonatomic, readonly) UILabel *detailLabel;
 @property (nonatomic, readonly) UIImageView *imageView;
-@property (nonatomic, readonly) UIButton *button;
+@property (nonatomic, strong) UIButton *button;
 @property (nonatomic, strong) UIView *customView;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGesture;
 
@@ -145,7 +145,7 @@ static char const * const kEmptyDataSetView =       "emptyDataSetView";
         
         UICollectionView *collectionView = (UICollectionView *)self;
         id <UICollectionViewDataSource> dataSource = collectionView.dataSource;
-
+        
         NSInteger sections = 1;
         
         if (dataSource && [dataSource respondsToSelector:@selector(numberOfSectionsInCollectionView:)]) {
@@ -211,6 +211,16 @@ static char const * const kEmptyDataSetView =       "emptyDataSetView";
         UIColor *color = [self.emptyDataSetSource imageTintColorForEmptyDataSet:self];
         if (color) NSAssert([color isKindOfClass:[UIColor class]], @"You must return a valid UIColor object for -imageTintColorForEmptyDataSet:");
         return color;
+    }
+    return nil;
+}
+
+- (UIButton *)dzn_buttonForState:(UIControlState)state
+{
+    if (self.emptyDataSetSource && [self.emptyDataSetSource respondsToSelector:@selector(buttonForEmptyDataSet:forState:)]) {
+        UIButton *button = [self.emptyDataSetSource buttonForEmptyDataSet:self forState:state];
+        if (button) NSAssert([button isKindOfClass:[UIButton class]], @"You must return a valid button object for -buttonForEmptyDataSet:forState:");
+        return button;
     }
     return nil;
 }
@@ -462,6 +472,7 @@ static char const * const kEmptyDataSetView =       "emptyDataSetView";
         [view prepareForReuse];
         
         UIView *customView = [self dzn_customView];
+        UIButton *customButton = [self dzn_buttonForState:UIControlStateNormal];
         
         // If a non-nil custom view is available, let's configure it instead
         if (customView) {
@@ -514,6 +525,10 @@ static char const * const kEmptyDataSetView =       "emptyDataSetView";
                 [view.button setBackgroundImage:[self dzn_buttonBackgroundImageForState:UIControlStateNormal] forState:UIControlStateNormal];
                 [view.button setBackgroundImage:[self dzn_buttonBackgroundImageForState:UIControlStateHighlighted] forState:UIControlStateHighlighted];
             }
+            
+            if(customButton){
+                view.button = customButton;
+            }
         }
         
         // Configure offset
@@ -533,7 +548,7 @@ static char const * const kEmptyDataSetView =       "emptyDataSetView";
         [view setupConstraints];
         
         [UIView performWithoutAnimation:^{
-            [view layoutIfNeeded];            
+            [view layoutIfNeeded];
         }];
         
         // Configure scroll permission
@@ -856,7 +871,7 @@ Class dzn_baseClassToSwizzleForTarget(id target)
 
 - (BOOL)canShowButton
 {
-    if ([_button attributedTitleForState:UIControlStateNormal].string.length > 0 || [_button imageForState:UIControlStateNormal]) {
+    if (_button || [_button attributedTitleForState:UIControlStateNormal].string.length > 0 || [_button imageForState:UIControlStateNormal]) {
         return (_button.superview != nil);
     }
     return NO;
@@ -881,6 +896,27 @@ Class dzn_baseClassToSwizzleForTarget(id target)
     [self.contentView addSubview:_customView];
 }
 
+- (void)setButton:(UIButton *)button{
+    
+    if(!button){
+        return;
+    }
+    
+    if (_button){
+        [_button removeFromSuperview];
+        _button = nil;
+    }
+    
+    _button = button;
+    _button.translatesAutoresizingMaskIntoConstraints = NO;
+    _button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+    _button.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    _button.accessibilityIdentifier = @"empty set button";
+    
+    [_button addTarget:self action:@selector(didTapButton:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.contentView addSubview:_button];
+}
 
 #pragma mark - Action Methods
 

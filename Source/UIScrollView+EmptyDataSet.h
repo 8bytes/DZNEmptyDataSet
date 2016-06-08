@@ -88,7 +88,10 @@
  */
 - (CAAnimation *) imageAnimationForEmptyDataSet:(UIScrollView *) scrollView;
 
-/**
+
+- (UIButton *)buttonForEmptyDataSet:(UIScrollView *)scrollView forState:(UIControlState)state;
+
+/**\
  Asks the data source for the title to be used for the specified button state.
  The dataset uses a fixed font style by default, if no attributes are set. If you want a different font style, return a attributed string.
  
@@ -248,28 +251,28 @@
 
 /**
  Tells the delegate that the empty data set will appear.
-
+ 
  @param scrollView A scrollView subclass informing the delegate.
  */
 - (void)emptyDataSetWillAppear:(UIScrollView *)scrollView;
 
 /**
  Tells the delegate that the empty data set did appear.
-
+ 
  @param scrollView A scrollView subclass informing the delegate.
  */
 - (void)emptyDataSetDidAppear:(UIScrollView *)scrollView;
 
 /**
  Tells the delegate that the empty data set will disappear.
-
+ 
  @param scrollView A scrollView subclass informing the delegate.
  */
 - (void)emptyDataSetWillDisappear:(UIScrollView *)scrollView;
 
 /**
  Tells the delegate that the empty data set did disappear.
-
+ 
  @param scrollView A scrollView subclass informing the delegate.
  */
 - (void)emptyDataSetDidDisappear:(UIScrollView *)scrollView;
