@@ -89,7 +89,7 @@
 - (CAAnimation *) imageAnimationForEmptyDataSet:(UIScrollView *) scrollView;
 
 
-- (UIView *)buttonForEmptyDataSet:(UIScrollView *)scrollView forState:(UIControlState)state;
+- (UIButton *)buttonForEmptyDataSet:(UIScrollView *)scrollView forState:(UIControlState)state;
 
 /**\
  Asks the data source for the title to be used for the specified button state.

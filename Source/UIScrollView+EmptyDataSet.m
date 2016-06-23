@@ -215,11 +215,11 @@ static char const * const kEmptyDataSetView =       "emptyDataSetView";
     return nil;
 }
 
-- (UIView *)dzn_buttonForState:(UIControlState)state
+- (UIButton *)dzn_buttonForState:(UIControlState)state
 {
     if (self.emptyDataSetSource && [self.emptyDataSetSource respondsToSelector:@selector(buttonForEmptyDataSet:forState:)]) {
-        UIView *button = [self.emptyDataSetSource buttonForEmptyDataSet:self forState:state];
-        if (button) NSAssert([button isKindOfClass:[UIView class]], @"You must return a valid button object for -buttonForEmptyDataSet:forState:");
+        UIButton *button = [self.emptyDataSetSource buttonForEmptyDataSet:self forState:state];
+        if (button) NSAssert([button isKindOfClass:[UIButton class]], @"You must return a valid button object for -buttonForEmptyDataSet:forState:");
         return button;
     }
     return nil;
