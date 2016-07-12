@@ -944,6 +944,8 @@ Class dzn_baseClassToSwizzleForTarget(id target)
     _buttonView = buttonView;
     _buttonView.translatesAutoresizingMaskIntoConstraints = NO;
     _buttonView.accessibilityIdentifier = @"empty set button view";
+    
+    [_buttonView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapButton:)]];
 
     [self.contentView addSubview:_buttonView];
 }
@@ -1104,7 +1106,7 @@ Class dzn_baseClassToSwizzleForTarget(id target)
     }
 
     // Return either the contentView or customView
-    if ([hitView isEqual:_contentView] || [hitView isEqual:_customView]) {
+    if ([hitView isEqual:_contentView] || [hitView isEqual:_customView] || [hitView isEqual:_buttonView]) {
         return hitView;
     }
 
